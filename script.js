@@ -123,5 +123,3 @@ const newGame = () => {
         }
     }    
 }
-
-newGame();
