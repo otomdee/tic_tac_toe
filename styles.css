@@ -20,7 +20,6 @@ body {
     grid-row: 2/3;
     height: 400px;
     width: 400px;
-    background-color: #1F2937;
     border-radius: 15px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -31,6 +30,7 @@ body {
 .square {
     font-size: larger;
     color: black;
+    background-color: #1F2937;
 }
 
 .newGame {
@@ -50,4 +50,25 @@ body {
     grid-column: 2/3;
     align-self: flex-end;
     background-color: #1F2937;
+    text-align: center;
+    font-size: large;
+}
+
+.setNames {
+    grid-column: 3/4;
+    grid-row: 1/2;
+    height: 100px;
+    width: 400px;
+    background-color: #1F2937;
+    align-self: flex-end;
+    padding-left: 10px;
+}
+
+.setNames div {
+    display: block;
+    margin: 5px 0;
+}
+
+.setNames h3 {
+    margin: 10px 0;
 }

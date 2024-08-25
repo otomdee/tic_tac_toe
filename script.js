@@ -1,4 +1,4 @@
-//generate board
+//generate board fxn
 const boardGenerate = () => {
     //square object factory
     const squareGenerate = (index, state) => {
@@ -26,15 +26,15 @@ const playerGenerate = (playerIndex) => {
     };
 }
 
+//gamestate fxn takes a current board, a player and a move, changes the board
 const gameState = (board, player, move) => {
-    //take a current board, a player and a move, changes the board
     if (board.board[move.row][move.column].state === 0) {
     board.board[move.row][move.column].state = player.playerIndex;
     }
 }
 
+//winLogic fxn takes a board, returns true if the last move was a winning move
 const winLogic = (board) => {
-    //takes a board, returns true if the last move was a winning move
     let winToggle = false;
     for (let i = 0; i < 3; i++) {
         //check rows || check columns
@@ -62,8 +62,8 @@ const winLogic = (board) => {
     return(winToggle);
 }
 
+//drawLogic fxn takes a board, checks if it is full
 const drawLogic = (board) => {
-    //takes a board, checks if it is full
     let playedSquares = 0;
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
@@ -80,13 +80,13 @@ const drawLogic = (board) => {
     }
 }
 
-
 //newGame function
-const newGame = () => {
+const newGame = (p1, p2) => {
     //clean up html
     document.querySelectorAll(".square").forEach((item) => {
         item.innerHTML = "";
     })
+    document.querySelector("#result").innerHTML = "";
 
     //generate board, players
    let player1 = playerGenerate(1);
@@ -137,10 +137,10 @@ const newGame = () => {
     const winDraw = () => {
         if (winLogic(myBoard)) {
             if (myBoard.nextMove === 1) {
-                document.querySelector("#result").innerHTML = "player 2 wins";
+                document.querySelector("#result").innerHTML = `${p2} wins!`;
             }
             else if (myBoard.nextMove === 2) {
-                document.querySelector("#result").innerHTML = "player 1 wins";
+                document.querySelector("#result").innerHTML = `${p1} wins!`;
             }
     
             document.querySelectorAll(".square").forEach((item) => {
@@ -149,10 +149,20 @@ const newGame = () => {
         }
         else if (drawLogic(myBoard)) {
             document.querySelector("#result").innerHTML = "It's a tie";
+            item.removeEventListener("click", squareChange);
         }
     }
 
     addListeners();
 }
 
-document.querySelector("#newGameBtn").addEventListener("click", newGame);
+document.querySelector("#newGameBtn").addEventListener("click", () => {
+
+    const p1 = document.querySelector("#player1").value;
+    const p2 = document.querySelector("#player2").value;
+
+    document.querySelectorAll(".square").forEach((item) => {
+        item.style.backgroundColor = "white";
+    });
+    newGame(p1, p2);
+})
