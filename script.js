@@ -4,7 +4,6 @@ const boardGenerate = () => {
     const squareGenerate = (index, state) => {
         return {index, state};
     }
-
     const board = [];
     for (let i = 0; i < 3; i++) {
         board[i] = [];
@@ -13,7 +12,6 @@ const boardGenerate = () => {
         }
     }
     let nextMove = 1;
-
     return {board, nextMove};
 }
 
@@ -83,43 +81,78 @@ const drawLogic = (board) => {
 }
 
 
-//function to play one round
-function playRound(board, player1, player2) {
-
-    if ( board.nextMove === 1) {
-        const usrInput = parseInt(prompt("player 1 move: "));
-        gameState(board, player1, player1.move(((usrInput - usrInput % 3) / 3), (usrInput % 3)));
-        board.nextMove = 2;
-    }
-    else if (board.nextMove === 2) {
-        const usrInput = parseInt(prompt("player 2 move: "));
-        gameState(board, player2, player2.move(((usrInput - (usrInput % 3)) / 3), (usrInput % 3)))
-        board.nextMove = 1;
-    }
-}
-
-//play a new game:
+//newGame function
 const newGame = () => {
-    //generate board, players
-    const player1 = playerGenerate(1);
-    const player2 = playerGenerate(2);
-    const myBoard = boardGenerate();
+    //clean up html
+    document.querySelectorAll(".square").forEach((item) => {
+        item.innerHTML = "";
+    })
 
-    while (!(winLogic(myBoard))) {
-        if (drawLogic(myBoard)) {
-            console.log("its a draw");
-            break;
-        }
-        playRound(myBoard, player1, player2);
-    }
-    //once while loop exits and there is no draw, there is a winner
-    if (winLogic(myBoard)) {
-        if (myBoard.nextMove === 1) {
-            console.log("player 2 wins");
-        }
-    
-        else if (myBoard.nextMove === 2) {
-            console.log("player 1 wins");
-        }
-    }    
+    //generate board, players
+   let player1 = playerGenerate(1);
+   let player2 = playerGenerate(2);
+   let myBoard = boardGenerate();
+
+
+   const renderBoard = () => {
+    document.querySelectorAll(".square").forEach((item) => {
+        let usrInput = item.value;
+        if (!(myBoard.board[((usrInput - usrInput % 3) / 3)][(usrInput % 3)].state === 0)) {
+            if (myBoard.board[((usrInput - usrInput % 3) / 3)][(usrInput % 3)].state === 1) {
+                item.innerHTML = "X";
+            }
+            else if (myBoard.board[((usrInput - usrInput % 3) / 3)][(usrInput % 3)].state === 2) {
+                item.innerHTML = "O";
+            }
+        } 
+    })
 }
+
+   function squareChange() {
+    let usrInput = this.value;
+    if ( this.innerHTML === "") {
+        if ( myBoard.nextMove === 1) {
+            gameState(myBoard, player1, player1.move(((usrInput - usrInput % 3) / 3), (usrInput % 3)));
+            myBoard.nextMove = 2;
+        }
+        else if (myBoard.nextMove === 2) {
+            gameState(myBoard, player2, player2.move(((usrInput - (usrInput % 3)) / 3), (usrInput % 3)));
+            myBoard.nextMove = 1;
+        }
+
+        //call renderboard
+        renderBoard();
+        //call windraw fxn
+        winDraw();
+    }
+}
+
+   const addListeners = () => {
+    const domSquares = document.querySelectorAll(".square");
+    domSquares.forEach((item) => {
+        item.addEventListener("click", squareChange);
+    })
+    }
+
+    const winDraw = () => {
+        if (winLogic(myBoard)) {
+            if (myBoard.nextMove === 1) {
+                document.querySelector("#result").innerHTML = "player 2 wins";
+            }
+            else if (myBoard.nextMove === 2) {
+                document.querySelector("#result").innerHTML = "player 1 wins";
+            }
+    
+            document.querySelectorAll(".square").forEach((item) => {
+                item.removeEventListener("click", squareChange);
+            })
+        }
+        else if (drawLogic(myBoard)) {
+            document.querySelector("#result").innerHTML = "It's a tie";
+        }
+    }
+
+    addListeners();
+}
+
+document.querySelector("#newGameBtn").addEventListener("click", newGame);
